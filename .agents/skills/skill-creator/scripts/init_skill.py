@@ -187,20 +187,28 @@ Note: This is a text placeholder. Actual assets can be any file type.
 
 
 def title_case_skill_name(skill_name):
-    """Convert hyphenated skill name to Title Case for display."""
+    """
+    Return a title-cased display name derived from a hyphen-separated skill identifier.
+    
+    Parameters:
+        skill_name (str): Hyphen-separated skill name (kebab-case), e.g. "my-skill-name".
+    
+    Returns:
+        display_name (str): Title-cased name with spaces replacing hyphens, e.g. "My Skill Name".
+    """
     return ' '.join(word.capitalize() for word in skill_name.split('-'))
 
 
 def init_skill(skill_name, path):
     """
-    Initialize a new skill directory with template SKILL.md.
-
-    Args:
-        skill_name: Name of the skill
-        path: Path where the skill directory should be created
-
+    Create a new skill scaffold at path/skill_name including SKILL.md and example resources.
+    
+    Parameters:
+    	skill_name (str): Kebab-case name used for the skill directory and to populate templates.
+    	path (str | Path): Target directory in which the new skill directory will be created.
+    
     Returns:
-        Path to created skill directory, or None if error
+    	created_path (Path | None): Path to the newly created skill directory, or `None` if creation failed.
     """
     # Determine skill directory path
     skill_dir = Path(path).resolve() / skill_name
@@ -271,6 +279,13 @@ def init_skill(skill_name, path):
 
 
 def main():
+    """
+    Parse CLI arguments, validate usage, invoke init_skill, and exit with an appropriate status code.
+    
+    Expects invocation: init_skill.py <skill-name> --path <path>.
+    If the arguments are missing or malformed, prints a usage message with examples and exits with code 1.
+    On valid input, calls init_skill(skill_name, path) and exits with code 0 if initialization succeeded, or code 1 on failure.
+    """
     if len(sys.argv) < 4 or sys.argv[2] != '--path':
         print("Usage: init_skill.py <skill-name> --path <path>")
         print("\nSkill name requirements:")

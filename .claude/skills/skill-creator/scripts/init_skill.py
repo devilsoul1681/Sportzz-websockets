@@ -193,14 +193,16 @@ def title_case_skill_name(skill_name):
 
 def init_skill(skill_name, path):
     """
-    Initialize a new skill directory with template SKILL.md.
-
-    Args:
-        skill_name: Name of the skill
-        path: Path where the skill directory should be created
-
+    Initialize a new skill directory populated with template files.
+    
+    Creates a directory named after skill_name under the given path and writes a SKILL.md plus example resources (scripts/example.py, references/api_reference.md, assets/example_asset.txt). If the target directory already exists or any filesystem operation fails, no changes are returned.
+    
+    Parameters:
+        skill_name (str): Directory name for the skill (used as the skill identifier).
+        path (str | Path): Parent path where the skill directory will be created.
+    
     Returns:
-        Path to created skill directory, or None if error
+        Path | None: Path to the created skill directory on success, or `None` if an error occurred.
     """
     # Determine skill directory path
     skill_dir = Path(path).resolve() / skill_name
@@ -271,6 +273,13 @@ def init_skill(skill_name, path):
 
 
 def main():
+    """
+    CLI entry point that validates command-line arguments and initializes a new skill directory.
+    
+    Expects the invocation form: `init_skill.py <skill-name> --path <path>`. Validates that the third token is `--path` and that enough arguments are provided. Skill-name must be a kebab-case identifier (lowercase letters, digits, and hyphens only), up to 64 characters, and match the target directory name exactly. On successful validation it calls `init_skill(skill_name, path)`.
+    
+    Exits the process with status 0 when initialization succeeds, or with status 1 on argument validation failure or any initialization error.
+    """
     if len(sys.argv) < 4 or sys.argv[2] != '--path':
         print("Usage: init_skill.py <skill-name> --path <path>")
         print("\nSkill name requirements:")
