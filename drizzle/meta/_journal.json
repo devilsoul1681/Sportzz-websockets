@@ -1,0 +1,20 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1771352588718,
+      "tag": "0000_smart_flatman",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1771353379982,
+      "tag": "0001_steep_runaways",
+      "breakpoints": true
+    }
+  ]
+}
