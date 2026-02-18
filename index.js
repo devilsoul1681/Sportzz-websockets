@@ -1,18 +1,17 @@
-const express = require('express');
+import express, { json } from "express";
+import matchsRouter from "./src/routes/matches.js";
 const app = express();
 const PORT = 8000;
 
 // Middleware
-app.use(express.json());
+app.use(json());
 
 // Routes
-app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to Sportzz API' });
+app.get("/", (req, res) => {
+  res.json({ message: "Welcome to Sportzz API" });
 });
 
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'Server is running', timestamp: new Date() });
-});
+app.use("/matches", matchsRouter);
 
 // Start server
 app.listen(PORT, () => {
