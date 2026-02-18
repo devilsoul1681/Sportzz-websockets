@@ -41,16 +41,25 @@ matchRouter.post("/", async (req, res) => {
   }
 
   try {
+    const insertPayload = {
+      ...parsed.data,
+      startTime: new Date(parsed.data.startTime),
+      homeScore: parsed.data.homeScore ?? 0,
+      awayScore: parsed.data.awayScore ?? 0,
+    };
+
+    // Only set endTime and status if endTime is provided
+    if (parsed.data.endTime) {
+      insertPayload.endTime = new Date(parsed.data.endTime);
+      insertPayload.status = getMatchStatus(
+        parsed.data.startTime,
+        parsed.data.endTime,
+      );
+    }
+
     const [newMatch] = await db
       .insert(matches)
-      .values({
-        ...parsed.data,
-        startTime: new Date(parsed.data.startTime),
-        endTime: new Date(parsed.data.endTime),
-        homeScore: parsed.data.homeScore ?? 0,
-        awayScore: parsed.data.awayScore ?? 0,
-        status: getMatchStatus(parsed.data.startTime, parsed.data.endTime),
-      })
+      .values(insertPayload)
       .returning();
     res
       .status(201)
