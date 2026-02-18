@@ -10,7 +10,24 @@ import yaml
 from pathlib import Path
 
 def validate_skill(skill_path):
-    """Basic validation of a skill"""
+    """
+    Validate the SKILL.md YAML frontmatter for a skill directory.
+    
+    Performs these checks and returns on the first failure found:
+    - SKILL.md file exists and contains YAML frontmatter delimited by '---'
+    - Frontmatter parses to a YAML mapping (dict)
+    - Only allowed top-level properties are present
+    - Required fields 'name' and 'description' exist and are strings
+    - 'name' (if non-empty) uses kebab-case, contains no leading/trailing or consecutive hyphens, and is at most 64 characters
+    - 'description' (if non-empty) contains no angle brackets and is at most 1024 characters
+    - Optional 'compatibility' (if present) is a string no longer than 500 characters
+    
+    Parameters:
+        skill_path (str | pathlib.Path): Path to the skill directory containing SKILL.md.
+    
+    Returns:
+        tuple: `(True, "Skill is valid!")` if all checks pass; otherwise `(False, <error message>)` where the message explains the first validation failure.
+    """
     skill_path = Path(skill_path)
 
     # Check SKILL.md exists
