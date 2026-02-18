@@ -62,7 +62,11 @@ matchRouter.post("/", async (req, res) => {
       .values(insertPayload)
       .returning();
     if (req.app.locals.broadcastMatchUpdate) {
-      req.app.locals.broadcastMatchUpdate(newMatch);
+      try {
+        req.app.locals.broadcastMatchUpdate(newMatch);
+      } catch (err) {
+        console.error("Failed to broadcast match update:", err);
+      }
     }
     res
       .status(201)
