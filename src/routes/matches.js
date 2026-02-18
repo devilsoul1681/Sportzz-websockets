@@ -61,6 +61,9 @@ matchRouter.post("/", async (req, res) => {
       .insert(matches)
       .values(insertPayload)
       .returning();
+    if (req.app.locals.broadcastMatchUpdate) {
+      req.app.locals.broadcastMatchUpdate(newMatch);
+    }
     res
       .status(201)
       .json({ message: "Match created successfully", match: newMatch });
