@@ -23,14 +23,12 @@ export default function setupWebSocketServer(server) {
       try {
         const decision = await wsArcjet.protect(req);
         if (decision.isDenied()) {
-          if (decision.reason.isRateLimit()) {
-            const code = decision.reason.isRateLimit() ? 1013 : 1008;
-            const message = decision.reason.isRateLimit()
-              ? "Too many requests"
-              : "Forbidden";
-            socket.close(code, message);
-            return;
-          }
+          const code = decision.reason.isRateLimit() ? 1013 : 1008;
+          const message = decision.reason.isRateLimit()
+            ? "Too many requests"
+            : "Forbidden";
+          socket.close(code, message);
+          return;
         }
       } catch (err) {
         console.error("Arcjet error:", err);
