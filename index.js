@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import matchsRouter from "./src/routes/matches.js";
 import setupWebSocketServer from "./src/ws/server.js";
+import { securityMiddleware } from "./src/arcjet.js";
 const app = express();
 const PORT = process.env.PORT || 8000;
 const HOST = process.env.HOST || "0.0.0.0";
@@ -16,7 +17,7 @@ app.use(json());
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to Sportzz API" });
 });
-
+app.use(securityMiddleware());
 app.use("/matches", matchsRouter);
 const { broadcastMatchUpdate } = setupWebSocketServer(server);
 app.locals.broadcastMatchUpdate = broadcastMatchUpdate;

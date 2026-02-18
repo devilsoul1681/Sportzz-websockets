@@ -1,4 +1,5 @@
 import WebSocket, { WebSocketServer } from "ws";
+import { wsArcjet } from "../arcjet.js";
 function sendJson(socket, payload) {
   if (socket.readyState !== WebSocket.OPEN) return;
   socket.send(JSON.stringify(payload));
@@ -17,7 +18,26 @@ export default function setupWebSocketServer(server) {
     maxPayload: 1024 * 1024,
   });
 
-  wss.on("connection", (socket) => {
+  wss.on("connection", async (socket, req) => {
+    if (wsArcjet) {
+      try {
+        const decision = await wsArcjet.protect(req);
+        if (decision.isDenied()) {
+          if (decision.reason.isRateLimit()) {
+            const code = decision.reason.isRateLimit() ? 1013 : 1008;
+            const message = decision.reason.isRateLimit()
+              ? "Too many requests"
+              : "Forbidden";
+            socket.close(code, message);
+            return;
+          }
+        }
+      } catch (err) {
+        console.error("Arcjet error:", err);
+        socket.close(1011, "Internal server error");
+        return;
+      }
+    }
     socket.isAlive = true;
 
     sendJson(socket, { message: "Welcome to the Sportzz WebSocket server!" });
